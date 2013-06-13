@@ -1,3 +1,8 @@
+;; This is a derived-major-mode for editing GABC files.
+;; For information on Gregorio, please see:
+;; http://home.gna.org/gregorio/
+
+
 ;; here are the faces for syntax coloring.
 ;; change them here. 
 
