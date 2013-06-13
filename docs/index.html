@@ -10,7 +10,7 @@
 <p>You will notice that the new buffer is already in tex-mode for syntax highlighting, but it hasn't been saved yet. This allows you to quickly inspect the code and you can modify it as well. To save with the default name which is simply the same name as the .gabc file with a different extension (.tex instead of .gabc), simply type C-x C-s. If you already have a file with that name you will be asked if you want to overwrite it.</p>
 <p>Note that this .tex source cannot be typeset by itself. The usual way of typsetting gregorio is to insert the source in another LaTeX document which is the template. You can see an example of this template on the gregorio website, or in the examples folder of gregorio-mode.el.</p>
 <img src="./img/main.png" width=640px />
-<p>In this template (main.tex in our case) you include the source which you have just created from the .gabc file by the TeX command: <pre>\include{file_name.tex}</pre> where 'file_name.tex' is the name of the file you saved after creating the tex source.</p>
+<p>In this template (main.tex in our case) you include the source which you have just created from the .gabc file by the TeX command: <pre>\includescore{file_name.tex}</pre> where 'file_name.tex' is the name of the file you saved after creating the tex source.</p>
 <p>While in the template file, if your emacs is already set up for using luatex as the tex engine, you can just press C-c C-c and you will be able to view the new .pdf with your score. Of course you can also use an external pdf viewer as well.</p>
 <img src="./img/all.png" width=640px />
 <h2>Some Useful tricks</h2>
