@@ -1,0 +1,7 @@
+* What is gregorio-mode.el ?
+  This is a major mode derived from the tex-mode in order to edit
+  .gabc files for use with Gregorio. Gregorio is Free Software that is
+  used to typeset Gregorian chant. You can find more about gregorio
+  at its [[http://home.gna.org/gregorio/][home page]].
+* Installation
+  
