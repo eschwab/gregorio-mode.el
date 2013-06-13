@@ -4,4 +4,25 @@
   used to typeset Gregorian chant. You can find more about gregorio
   at its [[http://home.gna.org/gregorio/][home page]].
 * Installation
-  
+** Using GIT
+   If you are on this page, you probably know how to use git. To
+   install this major mode, just do the following:
+
+*** 1. from the terminal, move into the ~/.emacs.d directory:
+   #+BEGIN_SRC bash
+   cd ~/.emacs.d
+   #+END_SRC
+*** 2. Then clone this repository into that directory   
+   #+BEGIN_SRC git
+   git clone https://github.com/cajetanus/gregorio-mode.el.git
+   #+END_SRC
+*** 3. Finally, add the following line to your .emacs file:
+   #+BEGIN_SRC elisp
+   (load "~/.emacs.d/gregorio-mode.el/gregorio-mode")
+   #+END_SRC
+   You can then do C-x C-e at the end of this line, or simply restart
+   Emacs. The major mode will activate when you visit an .gabc file.
+** Using el-get
+   Eventually this major mode will be available through the [[https://github.com/dimitri/el-get][el-get
+   package system]]. This page will be updated when the pull request
+   has been processed.
