@@ -26,3 +26,12 @@
    Eventually this major mode will be available through the [[https://github.com/dimitri/el-get][el-get
    package system]]. This page will be updated when the pull request
    has been processed.
+* Documentation
+** Local html documentation
+   The folder that you obtained via git contains some documentation
+   in html format. Simply visit open this folder with your webbrowser:
+   #+BEGIN_SRC bash
+   ~/.emacs.d/gregorio-mode.el/docs/
+   #+END_SRC
+** Online html documentation
+   The documentation can also be viewed [[http://christusrex.pl:8080][HERE]] online. 
