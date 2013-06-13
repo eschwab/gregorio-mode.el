@@ -82,11 +82,14 @@
 (defun gregorio-to-tex ()
   "convert buffer to tex, output to another buffer"
   (interactive)
+  (setf new-tex (concat (file-name-base) ".tex"))
   (shell-command-on-region
    (point-min) (point-max)
    "gregorio -sS"
-   (concat (file-name-base) ".tex")
-   nil t))
+   new-tex
+   nil 't)
+   (switch-to-buffer-other-window new-tex)
+   (tex-mode)) ;; new buffer is in tex-mode for syntax coloring and ready to save!
 
 ;; Keyboard bindings
 
