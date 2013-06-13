@@ -8,7 +8,7 @@
    If you are on this page, you probably know how to use git. To
    install this major mode, just do the following:
 
-*** 1. from the terminal, move into the ~/.emacs.d directory:
+*** 1. From the terminal, move into the ~/.emacs.d directory:
    #+BEGIN_SRC bash
    cd ~/.emacs.d
    #+END_SRC
