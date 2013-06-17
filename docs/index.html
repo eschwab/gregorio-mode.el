@@ -14,5 +14,17 @@
 <p>While in the template file, if your emacs is already set up for using luatex as the tex engine, you can just press C-c C-c and you will be able to view the new .pdf with your score. Of course you can also use an external pdf viewer as well.</p>
 <img src="./img/all.png" width=640px />
 <h2>Some Useful tricks</h2>
-<p>(under construction....)
+<h3>Transposing a region</h3>
+<p>Gregorio-mode includes a very useful function for tranposing sections of your score. In this small example, from the Introit of <i>in Die Nativitatis Domini</i>, we have a section which was transcribed a whole third down, from text <i>vocabitur nomen</i>, as you can see in this screenshot.</p>
+<img src="./img/puer-error.png" />
+<p>You can of course correct this the usual way by returning to the code and changing each letter. However, there is a faster way using the transposing function. In order to do this, simply create a region by setting a mark and then moving the point to the end of the score you want to transpose (some editors call this making a selection)as in this screenshot:</p>
+<img src="./img/transpose-up.png" />
+<p>There are two commands now that work on the region: transpose-up and transpose-down. They are bound to the keys C-c u and C-c d respectively (C-c is the prefix, then 'u' for up, 'd' for down). In our case the region is too low, by a minor third in fact, which means we have to move our region up two diatonic step. In order to do this, you need but press the command key two times: </p>
+<pre>C-c u</pre>
+<img scr="./img/transpose-up-1.png" />
+<p>And yet again:</p>
+<img src="./img/transpose-up-2.png" />
+<p>All is good now, so we can save our gabc file, press [F1] to generate the source, and finally make the pdf:
+<img src="./img/puer-good.png" />
 </html>
+
