@@ -2,9 +2,13 @@
 ;; For information on Gregorio, please see:
 ;; http://home.gna.org/gregorio/
 
+;; Keyboard bindings. Change them here
 
-;; here are the faces for syntax coloring.
-;; change them here. 
+(global-set-key [f1] 'gregorio-to-tex) ;; to-tex in another buffer.
+(global-set-key (kbd "C-c u") 'transpose-region-up) ;;
+(global-set-key (kbd "C-c d") 'transpose-region-down)
+
+;; Here are the faces for syntax coloring. Change them here. 
 
 (setq
  comment-face      'font-lock-comment-face
@@ -12,6 +16,7 @@
  title-fields-face 'font-lock-builtin-face
  notes-face        'font-lock-keyword-face
  modifiers-face    'font-lock-preprocessor-face
+ html-face         'nobreak-space
  text-face         'bold
  accented-face     'bold
 )
@@ -49,6 +54,7 @@
 
 ;;;; The rest of the file shouldn't need to be modified, but feel free to do so!
 
+
 ;; The various types of syntax coloring. Change the faces at the beginning of the file.
 
 ;; comments start with % on the beginning of the line.
@@ -67,6 +73,8 @@
 ;; accented characters. Can also put vowels in different face if wanted.
 (setq gregorio-text-accented-regexp
       (regexp-opt '("á" "é" "í" "ó" "ú")))
+;; sometimes people insert html, just simple here
+(setq gregorio-html-text-regexp "<[^>]+>")
 
 ;; set the faces. 
 
@@ -76,8 +84,10 @@
 	(,gregorio-title-fields-regexp . title-fields-face)
 	(,gregorio-notes-regexp . notes-face)
 	(,gregorio-modifiers-regexp . modifiers-face)
+	(,gregorio-html-text-regexp . html-face)
 	(,gregorio-text-regexp . text-face)
-	(,gregorio-text-accented-regexp . accented-face)))
+	(,gregorio-text-accented-regexp . accented-face)
+        ))
 
 (defun gregorio-to-tex ()
   "convert buffer to tex, output to another buffer"
@@ -91,9 +101,97 @@
    (switch-to-buffer-other-window new-tex)
    (tex-mode)) ;; new buffer is in tex-mode for syntax coloring and ready to save!
 
-;; Keyboard bindings
+;; doing it this way so more pairs can be added 
+;; there must be a better way of doing this.
+;; TO DO : change this ugly beast.
 
-(global-set-key [f1] 'gregorio-to-tex) ;; to-tex in another buffer.
+(defvar trans-up-pairs
+  [["a" "b"]
+   ["b" "c"]
+   ["c" "d"]
+   ["d" "e"]
+   ["e" "f"]
+   ["f" "g"]
+   ["g" "h"]
+   ["h" "i"]
+   ["i" "j"]
+   ["j" "k"]
+   ["k" "l"]
+   ["l" "%"]])
+
+(defvar trans-down-pairs
+  [["a" "%"]
+   ["b" "a"]
+   ["c" "b"]
+   ["d" "c"]
+   ["e" "d"]
+   ["f" "e"]
+   ["g" "f"]
+   ["h" "g"]
+   ["i" "h"]
+   ["j" "i"]
+   ["k" "j"]
+   ["l" "k"]
+   ["%" "l"]])
+
+;; Ugly worker function for transposing.
+(defun replace-pairs-in-string (str pairs)
+  "Replace STR by find/replace PAIRS sequence."
+  ;; TO DO : this work-around is not elegant, find better solution
+(save-excursion
+  (let (my-var (myStr str) (tempMapPoints '()))
+    ;; insert unicode points into the first of pair 
+    (setq my-var 0)
+    (while (< my-var (length pairs))
+      (setq tempMapPoints (cons (format "⚎ด%x" my-var) tempMapPoints ))
+      (setq my-var (1+ my-var))
+      )
+    ;; replace it
+    (setq my-var 0)
+    (while (< my-var (length pairs))
+      (setq myStr (replace-regexp-in-string
+                   (regexp-quote (elt (elt pairs my-var) 0))
+                   (elt tempMapPoints my-var)
+                   myStr t t))
+      (setq my-var (1+ my-var))
+      )
+    ;; return it back
+    (setq my-var 0)
+    (while (< my-var (length pairs))
+      (setq myStr (replace-regexp-in-string
+                   (elt tempMapPoints my-var)
+                   (elt (elt pairs my-var) 1)
+                   myStr t t))
+      (setq my-var (1+ my-var))
+      )
+    ;; final value
+    myStr))) ;; O my this is ugly code. Please change asap.
+  
+(defun transpose-region-up (start end)
+  "Transpose region upwards"
+  (interactive "r")
+  (save-restriction
+    (narrow-to-region start end)
+    (goto-char 1)
+    (let ((case-fold-search nil))
+      (while (search-forward-regexp "(\\([^)]+\\))" nil t)
+	(replace-match (concat "("
+			(replace-pairs-in-string (match-string 1) trans-up-pairs)
+			")")
+		       t nil)))))
+
+(defun transpose-region-down (start end)
+  "Transpose region upwards"
+  (interactive "r")
+  (save-restriction
+    (narrow-to-region start end)
+    (goto-char 1)
+    (let ((case-fold-search nil))
+      (while (search-forward-regexp "(\\([^)]+\\))" nil t)
+	(replace-match (concat "("
+			(replace-pairs-in-string (match-string 1) trans-down-pairs)
+			")")
+		       t nil)))))
 
 ;; define the derived mode. Note we use tex-mode as basis.
 
