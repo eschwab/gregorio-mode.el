@@ -17,7 +17,7 @@
 <h3>Transposing a region</h3>
 <p>Gregorio-mode includes a very useful function for tranposing sections of your score. In this small example, from the Introit of <i>in Die Nativitatis Domini</i>, we have a section which was transcribed a whole third down, from text <i>vocabitur nomen</i>, as you can see in this screenshot.</p>
 <img src="./img/puer-error.png" width=640px />
-<p>You can of course correct this the usual way by returning to the code and changing each letter. However, there is a faster way using the transposing function. In order to do this, simply create a region by setting a mark and then moving the point to the end of the score you want to transpose (some editors call this making a selection)as in this screenshot:</p>
+<p>You can of course correct this the usual way by returning to the code and changing each letter. However, there is a faster way using the transposing function. In order to do this, simply create a region by setting a mark and then moving the point to the end of the score you want to transpose (some editors call this making a selection) as in this screenshot:</p>
 <img src="./img/make-region.png" width=640px />
 <p>There are two commands now that work on the region: transpose-up and transpose-down. They are bound to the keys C-c u and C-c d respectively (C-c is the prefix, then 'u' for up, 'd' for down). In our case the region is too low, by a minor third in fact, which means we have to move our region up two diatonic step. In order to do this, you need but press the key: </p>
 <pre>C-c u</pre>
