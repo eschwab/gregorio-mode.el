@@ -22,8 +22,9 @@
 <p>There are two commands now that work on the region: transpose-up and transpose-down. They are bound to the keys C-c u and C-c d respectively (C-c is the prefix, then 'u' for up, 'd' for down). In our case the region is too low, by a minor third in fact, which means we have to move our region up two diatonic steps. In order to do this, you need but press the key: </p>
 <pre>C-c u</pre>
 <img src="./img/transpose-up-1.png" width=640px />
-<p>And yet again:</p>
+<p>Notice that the transpose function does not alter the region, so you can simply press the same key again to move the same region upwards a tone:</p>
 <pre>C-c u</pre>
+<p>Note that you can also move the same region down with the function C-c d if you happen to press the key too many times. You can also modify the key to whatever you would like by changing the values in the gregorio-mode.el file.</p>
 <img src="./img/transpose-up-2.png" width=640px />
 <p>All is good now, so we can save our gabc file, press [F1] to generate the source, and finally make the pdf:
 <img src="./img/puer-good.png" width=640px />
