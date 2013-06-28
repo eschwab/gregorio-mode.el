@@ -4,11 +4,15 @@
 
 ;; Keyboard bindings. Change them here
 
-(global-set-key [f1] 'gregorio-to-tex) ;; to-tex in another buffer.
-(global-set-key (kbd "C-c u") 'transpose-region-up) ;;
-(global-set-key (kbd "C-c d") 'transpose-region-down)
+(defvar gregorio-mode-keymap
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "C-c C-e") 'gregorio-to-tex)
+    (define-key map (kbd "C-c u") 'gregorio-transpose-region-up)
+    (define-key map (kbd "C-c d") 'gregorio-transpose-region-down)
+    map)
+  "Keymap used for gregorio-mode.")
 
-;; Here are the faces for syntax coloring. Change them here. 
+;; Here are the faces for syntax coloring. Change them here.
 
 (setq
  comment-face      'font-lock-comment-face
@@ -23,7 +27,7 @@
 
 ;; the keywords that are in the beginning of a gabc file. [meta-data]
 
-(setq gregorio-keywords
+(defvar gregorio-keywords
       '("name"
 	"gabc-copyright"
 	"score-copyright"
@@ -48,37 +52,43 @@
 	"user-notes"
 	"annotation"
 	"style"
-	))
+	)
+  "List of possible attribues for the header in gabc files.")
 
 ;; you can add to the list if necessary, just include the quotes for each item.
 
 ;;;; The rest of the file shouldn't need to be modified, but feel free to do so!
 
+;; The various types of syntax coloring. Change the faces at the beginning of
+;; the file.
 
-;; The various types of syntax coloring. Change the faces at the beginning of the file.
+(defvar gregorio-comments-regexp "^%.?+"
+  "Regexp for comments which start with % on the beginning of the line.")
 
-;; comments start with % on the beginning of the line.
-(setq gregorio-comments-regexp "^%.?+")
-;; keywords list as regexp
-(setq gregorio-keywords-regexp
-      (regexp-opt gregorio-keywords))
-;; fields in other face, just because we can 
-(setq gregorio-title-fields-regexp ":.+;")
-;; the notes are always in parens, treat them like keywords
-(setq gregorio-notes-regexp "([^)]+)")
-;; the text in a special face so we can read it easier
-(setq gregorio-text-regexp "\\ca\\|æ\\|œ") 
-;; sometimes control characters
-(setq gregorio-modifiers-regexp "{[^}]+}")
-;; accented characters. Can also put vowels in different face if wanted.
-(setq gregorio-text-accented-regexp
-      (regexp-opt '("á" "é" "í" "ó" "ú")))
-;; sometimes people insert html, just simple here
-(setq gregorio-html-text-regexp "<[^>]+>")
+(defvar gregorio-keywords-regexp (regexp-opt gregorio-keywords)
+  "Regexp for header attributes.")
 
-;; set the faces. 
+(defvar gregorio-title-fields-regexp ":.+;"
+  "Regexp for the values of keywords.")
 
-(setq gregorio-font-lock-keywords
+(defvar gregorio-notes-regexp "([^)]+)"
+  "Regexp for the notes contained within ()'s.")
+
+(defvar gregorio-text-regexp "\\ca\\|æ\\|œ"
+  "Regexp for sepcial text so it can be read easier.")
+
+(defvar gregorio-modifiers-regexp "{[^}]+}"
+  "Regexp control characters.")
+
+(defvar gregorio-text-accented-regexp (regexp-opt '("á" "é" "í" "ó" "ú"))
+  "Regexp for accented vowels.")
+
+(defvar gregorio-html-text-regexp "<[^>]+>"
+  "Regexp for html tags.")
+
+;; set the faces.
+
+(defvar gregorio-font-lock-keywords
       `((,gregorio-comments-regexp . comment-face)
 	(,gregorio-keywords-regexp . keyword-face)
 	(,gregorio-title-fields-regexp . title-fields-face)
@@ -86,8 +96,11 @@
 	(,gregorio-modifiers-regexp . modifiers-face)
 	(,gregorio-html-text-regexp . html-face)
 	(,gregorio-text-regexp . text-face)
-	(,gregorio-text-accented-regexp . accented-face)
-        ))
+	(,gregorio-text-accented-regexp . accented-face))
+  "Expressions to highligh in gregorio mode.")
+
+(defvar gregorio-mode-hook nil
+  "Function(s) to call after starting up gregorio-mode.")
 
 (defun gregorio-to-tex ()
   "convert buffer to tex, output to another buffer"
@@ -101,111 +114,72 @@
    (switch-to-buffer-other-window new-tex)
    (tex-mode)) ;; new buffer is in tex-mode for syntax coloring and ready to save!
 
-;; doing it this way so more pairs can be added 
-;; there must be a better way of doing this.
-;; TO DO : change this ugly beast.
+(defun gregorio-transpose-region-up (start end arg)
+  "Transpose region upwards by one diatonic step.
 
-(defvar trans-up-pairs
-  [["a" "b"]
-   ["b" "c"]
-   ["c" "d"]
-   ["d" "e"]
-   ["e" "f"]
-   ["f" "g"]
-   ["g" "h"]
-   ["h" "i"]
-   ["i" "j"]
-   ["j" "k"]
-   ["k" "l"]
-   ["l" "%"]])
+With a numerical prefix argument, transpose by N diatonic steps.
+i.e. C-u 2 \\[gregorio-transpose-region-up] Will transpose the region upwards by two steps.
 
-(defvar trans-down-pairs
-  [["a" "%"]
-   ["b" "a"]
-   ["c" "b"]
-   ["d" "c"]
-   ["e" "d"]
-   ["f" "e"]
-   ["g" "f"]
-   ["h" "g"]
-   ["i" "h"]
-   ["j" "i"]
-   ["k" "j"]
-   ["l" "k"]
-   ["%" "l"]])
-
-;; Ugly worker function for transposing.
-(defun replace-pairs-in-string (str pairs)
-  "Replace STR by find/replace PAIRS sequence."
-  ;; TO DO : this work-around is not elegant, find better solution
-(save-excursion
-  (let (my-var (myStr str) (tempMapPoints '()))
-    ;; insert unicode points into the first of pair 
-    (setq my-var 0)
-    (while (< my-var (length pairs))
-      (setq tempMapPoints (cons (format "⚎ด%x" my-var) tempMapPoints ))
-      (setq my-var (1+ my-var))
-      )
-    ;; replace it
-    (setq my-var 0)
-    (while (< my-var (length pairs))
-      (setq myStr (replace-regexp-in-string
-                   (regexp-quote (elt (elt pairs my-var) 0))
-                   (elt tempMapPoints my-var)
-                   myStr t t))
-      (setq my-var (1+ my-var))
-      )
-    ;; return it back
-    (setq my-var 0)
-    (while (< my-var (length pairs))
-      (setq myStr (replace-regexp-in-string
-                   (elt tempMapPoints my-var)
-                   (elt (elt pairs my-var) 1)
-                   myStr t t))
-      (setq my-var (1+ my-var))
-      )
-    ;; final value
-    myStr))) ;; O my this is ugly code. Please change asap.
-  
-(defun transpose-region-up (start end)
-  "Transpose region upwards"
-  (interactive "r")
+N.B. This function does not check to see if the resulting score
+will be out of range for gregorio. i.e. a tone higher than 'm'."
+  (interactive "r\np")
+  (unless arg (setq arg '(1)))
   (save-restriction
     (narrow-to-region start end)
     (goto-char 1)
     (let ((case-fold-search nil))
       (while (search-forward-regexp "(\\([^)]+\\))" nil t)
-	(replace-match (concat "("
-			(replace-pairs-in-string (match-string 1) trans-up-pairs)
-			")")
-		       t nil)))))
+	(replace-match
+	 (concat "("
+		 (replace-regexp-in-string "[a-mA-M]"
+		    (lambda (char) (char-to-string
+				    (+ (string-to-char char) arg)))
+		    (match-string 1) t)
+		 ")")
+	 t)))))
 
-(defun transpose-region-down (start end)
-  "Transpose region upwards"
-  (interactive "r")
+(defun gregorio-transpose-region-down (start end arg)
+  "Transpose region downwards by one diatonic step.
+
+With a numerical prefix argument, transpose by N diatonic steps.
+i.e. C-u 2 \\[gregorio-transpose-region-down] Will transpose the region downwards by two steps.
+
+N.B. This function does not check to see if the resulting score
+will be out of range for gregorio. i.e. a tone lower than 'a'."
+  (interactive "r\np")
+  (unless arg (setq arg '(1)))
   (save-restriction
     (narrow-to-region start end)
     (goto-char 1)
     (let ((case-fold-search nil))
       (while (search-forward-regexp "(\\([^)]+\\))" nil t)
-	(replace-match (concat "("
-			(replace-pairs-in-string (match-string 1) trans-down-pairs)
-			")")
-		       t nil)))))
+	(replace-match
+	 (concat "("
+		 (replace-regexp-in-string "[a-mA-M]"
+		    (lambda (char) (char-to-string
+				    (- (string-to-char char) arg)))
+		    (match-string 1) t)
+		 ")")
+	 t)))))
 
 ;; define the derived mode. Note we use tex-mode as basis.
 
 (define-derived-mode gregorio-mode tex-mode
   "gregorio"
-  "Major Mode for editing .gabc files"
-  
-  (setq font-lock-defaults '((gregorio-font-lock-keywords)))
-)
+  "Major Mode for editing .gabc files.
+
+Commands:
+\\{gregorio-mode-keymap}"
+
+  (set (make-local-variable 'font-lock-defaults)
+       '(gregorio-font-lock-keywords))
+  (use-local-map gregorio-mode-keymap)
+  (run-hooks 'gregorio-mode-hook))
 
 ;; hooks for opening .gabc files, so this mode loads automatically.
 
 (or (assoc "\\.gabc$" auto-mode-alist)
-    (setq auto-mode-alist (cons '("\\.gabc$" . gregorio-mode) auto-mode-alist)))
+    (add-to-list 'auto-mode-alist '("\\.gabc\\'" . gregorio-mode)))
 
 ;; let's wrap it all up.
 
