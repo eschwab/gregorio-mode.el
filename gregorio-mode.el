@@ -12,22 +12,74 @@
     map)
   "Keymap used for gregorio-mode.")
 
-;; Here are the faces for syntax coloring. Change them here.
+;; Here are the faces for syntax coloring. To modify them you can:
+;; 1) Change them here.
+;; 2) Use M-x customize-group RET gregorio-faces RET
+;; 3) Redefine them in your emacs init file.
+;;    i.e. (set-face-foreground 'gregorio-comment "Green")
 
-(setq
- comment-face      'font-lock-comment-face
- keyword-face      'font-lock-constant-face
- title-fields-face 'font-lock-builtin-face
- notes-face        'font-lock-keyword-face
- modifiers-face    'font-lock-preprocessor-face
- html-face         'nobreak-space
- text-face         'bold
- accented-face     'bold
-)
+(defgroup gregorio-faces nil
+  "Faces used by gregorio-mode."
+  :group 'gregorio
+  :group 'faces)
 
-;; the keywords that are in the beginning of a gabc file. [meta-data]
+(defface gregorio-comment
+  '((t (:inherit font-lock-comment-face)))
+  "Face used for comments."
+  :group 'gregorio-faces)
+(defvar gregorio-comment-face 'gregorio-comment
+  "Face name used for comments.")
 
-(defvar gregorio-keywords
+(defface gregorio-keyword
+  '((t (:inherit font-lock-constant-face)))
+  "Face used for header attributes."
+  :group 'gregorio-faces)
+(defvar gregorio-keyword-face 'gregorio-keyword
+  "Face name used for header attributes.")
+
+(defface gregorio-title-fields
+  '((t (:inherit font-lock-builtin-face)))
+  "Face used for values of header attributes."
+  :group 'gregorio-faces)
+(defvar gregorio-title-fields-face 'gregorio-title-fields
+  "Face name used for values of header attributes.")
+
+(defface gregorio-notes
+  '((t (:inherit font-lock-keyword-face)))
+  "Face used for notes."
+  :group 'gregorio-faces)
+(defvar gregorio-notes-face 'gregorio-notes
+  "Face name used for notes.")
+
+(defface gregorio-modifiers
+  '((t (:inherit font-lock-preprocessor-face)))
+  "Face used for control characters."
+  :group 'gregorio-faces)
+(defvar gregorio-modifiers-face 'gregorio-modifiers
+  "Face name used for control characters.")
+
+(defface gregorio-html
+  '((t (:inherit nobreak-space)))
+  "Face used for html code."
+  :group 'gregorio-faces)
+(defvar gregorio-html-face 'gregorio-html
+  "Face name used for html code.")
+
+(defface gregorio-text
+  '((t (:inherit bold)))
+  "Face used for regular text."
+  :group 'gregorio-faces)
+(defvar gregorio-text-face 'gregorio-text
+  "Face name used for regular text.")
+
+(defface gregorio-accented
+  '((t (:inherit bold)))
+  "Face used for accented text."
+  :group 'gregorio-faces)
+(defvar gregorio-accented-face 'gregorio-accented
+  "Face name used for accented text.")
+
+(defcustom gregorio-keywords
       '("name"
 	"gabc-copyright"
 	"score-copyright"
@@ -51,11 +103,18 @@
 	"centering-scheme"
 	"user-notes"
 	"annotation"
-	"style"
-	)
-  "List of possible attribues for the header in gabc files.")
+	"style")
+   "List of possible attribues for the header in gabc files. [meta-data]
 
-;; you can add to the list if necessary, just include the quotes for each item.
+You can add to the list if necessary with either one of the following options:
+  1) M-x customize-group RET gregorio RET
+  2) Adding to your emacs init:
+
+       (font-lock-add-keywords 'gregorio-mode
+         '((\"\\\\(NEWKEYWORD\\\\)\" (0 gregorio-keyword-face))))
+
+  3) Edit this file."
+  :group 'gregorio)
 
 ;;;; The rest of the file shouldn't need to be modified, but feel free to do so!
 
@@ -78,7 +137,7 @@
   "Regexp for sepcial text so it can be read easier.")
 
 (defvar gregorio-modifiers-regexp "{[^}]+}"
-  "Regexp control characters.")
+  "Regexp for control characters.")
 
 (defvar gregorio-text-accented-regexp (regexp-opt '("á" "é" "í" "ó" "ú"))
   "Regexp for accented vowels.")
@@ -89,14 +148,16 @@
 ;; set the faces.
 
 (defvar gregorio-font-lock-keywords
-      `((,gregorio-comments-regexp . comment-face)
-	(,gregorio-keywords-regexp . keyword-face)
-	(,gregorio-title-fields-regexp . title-fields-face)
-	(,gregorio-notes-regexp . notes-face)
-	(,gregorio-modifiers-regexp . modifiers-face)
-	(,gregorio-html-text-regexp . html-face)
-	(,gregorio-text-regexp . text-face)
-	(,gregorio-text-accented-regexp . accented-face))
+  (list
+   (list gregorio-comments-regexp '(0 gregorio-comment-face))
+   (list gregorio-keywords-regexp '(0 gregorio-keyword-face))
+   (list gregorio-title-fields-regexp '(0 gregorio-title-fields-face))
+   (list gregorio-notes-regexp '(0 gregorio-notes-face))
+   (list gregorio-modifiers-regexp '(0 gregorio-modifiers-face))
+   (list gregorio-html-text-regexp '(0 gregorio-html-face))
+   (list gregorio-text-regexp '(0 gregorio-text-face))
+   (list gregorio-text-accented-regexp '(0 gregorio-accented-face))
+   )
   "Expressions to highligh in gregorio mode.")
 
 (defvar gregorio-mode-hook nil
@@ -111,8 +172,8 @@
    "gregorio -sS"
    new-tex
    nil 't)
-   (switch-to-buffer-other-window new-tex)
-   (tex-mode)) ;; new buffer is in tex-mode for syntax coloring and ready to save!
+  (switch-to-buffer-other-window new-tex)
+  (tex-mode)) ;; new buffer is in tex-mode for syntax coloring and ready to save!
 
 (defun gregorio-transpose-region-up (start end arg)
   "Transpose region upwards by one diatonic step.
@@ -167,6 +228,9 @@ will be out of range for gregorio. i.e. a tone lower than 'a'."
 (define-derived-mode gregorio-mode tex-mode
   "gregorio"
   "Major Mode for editing .gabc files.
+
+This mode executes a hook `gregorio-mode-hook'.
+The customization group is 'gregorio'.
 
 Commands:
 \\{gregorio-mode-keymap}"
