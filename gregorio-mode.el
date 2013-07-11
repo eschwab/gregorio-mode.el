@@ -127,7 +127,7 @@ You can add to the list if necessary with either one of the following options:
 (defvar gregorio-keywords-regexp (regexp-opt gregorio-keywords)
   "Regexp for header attributes.")
 
-(defvar gregorio-title-fields-regexp ":.+;"
+(defvar gregorio-title-fields-regexp ":.+[^()];"
   "Regexp for the values of keywords.")
 
 (defvar gregorio-notes-regexp "([^)]+)"
@@ -163,17 +163,25 @@ You can add to the list if necessary with either one of the following options:
 (defvar gregorio-mode-hook nil
   "Function(s) to call after starting up gregorio-mode.")
 
-(defun gregorio-to-tex ()
-  "convert buffer to tex, output to another buffer"
-  (interactive)
-  (setf new-tex (concat (file-name-base) ".tex"))
-  (shell-command-on-region
-   (point-min) (point-max)
-   "gregorio -sS"
-   new-tex
-   nil 't)
-  (switch-to-buffer-other-window new-tex)
-  (tex-mode)) ;; new buffer is in tex-mode for syntax coloring and ready to save!
+(defun gregorio-to-tex (&optional arg)
+  "Convert buffer to tex, output to another buffer.
+
+With a prefix argument, save buffer and execute gregorio on the buffer's file."
+  (interactive "P")
+  (if arg (progn
+	    (save-buffer)
+	    (shell-command
+	     (concat "gregorio " buffer-file-name) nil "*Gregorio Error*"))
+    (progn
+      (setf new-tex (concat (file-name-base) ".tex"))
+      (shell-command-on-region
+       (point-min) (point-max)
+       "gregorio -sS"
+       new-tex
+       nil 't)
+      (switch-to-buffer-other-window new-tex)
+      (tex-mode))))
+;; new buffer is in tex-mode for syntax coloring and ready to save!
 
 (defun gregorio-transpose-region-up (start end arg)
   "Transpose region upwards by one diatonic step.
