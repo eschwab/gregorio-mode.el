@@ -33,7 +33,7 @@
    Followed by 'gregorio-mode'. Then all should be automatic.
 
    You can also install the gregorio mode recipe in your own
-   'el-get-user/recipes' folder by copying [[https://raw.github.com/cajetanus/gregorio-mode.el/gregorio-mode.rcp][this file]] into
+   'el-get-user/recipes' folder by copying [[https://raw.github.com/cajetanus/gregorio-mode.el/master/gregorio-mode.rcp][this file]] into
    #+BEGIN_SRC 
       ~/.emacs.d/el-get-user/recipes
    #+END_SRC
