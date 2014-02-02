@@ -34,6 +34,15 @@
 <img src="./img/transpose-up-2.png" width=640px />
 <p>All is good now, so we can save our gabc file, press [C-c C-e] to generate the source, and finally make the pdf:
 <img src="./img/puer-good.png" width=640px />
+<h3>Fill empty parentheses</h3>
+<p>Some scores, such as dialogues and readings/lessons, repeat the same note over many syllables and words. To easily fill these in, begin by inserting parentheses into the proper locations in the text.</p>
+<pre>In() no()mi()ne() Pa()tris()</pre>
+<p>Then highlight the region you wish to fill in and press:</p>
+<pre>C-c f</pre>
+<p>In the minibuffer there will be a prompt "Note to fill with:". Type the letter of the note and press RET. Voila, you should now have (with the note you wanted):</p>
+<pre>In(h) no(h)mi(h)ne(h) Pa(h)tris(h)</pre>
+<h3>Faster Navigation</h3>
+<p>You can use [C-M-f] and [C-M-b] for quickly moving (forwards and backwards respectively) from one punctum group to another punctum group.
 <h3>Customizable Options</h3>
 <p>The syntax highlighting can be customized by one of three methods:</p>
   <ol>

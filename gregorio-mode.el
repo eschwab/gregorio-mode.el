@@ -9,6 +9,9 @@
     (define-key map (kbd "C-c C-e") 'gregorio-to-tex)
     (define-key map (kbd "C-c u") 'gregorio-transpose-region-up)
     (define-key map (kbd "C-c d") 'gregorio-transpose-region-down)
+    (define-key map (kbd "C-M-f") 'gregorio-next-parens)
+    (define-key map (kbd "C-M-b") 'gregorio-prev-parens)
+    (define-key map (kbd "C-c f") 'gregorio-fill-parens)
     map)
   "Keymap used for gregorio-mode.")
 
@@ -187,7 +190,8 @@ With a prefix argument, save buffer and execute gregorio on the buffer's file."
   "Transpose region upwards by one diatonic step.
 
 With a numerical prefix argument, transpose by N diatonic steps.
-i.e. C-u 2 \\[gregorio-transpose-region-up] Will transpose the region upwards by two steps.
+i.e. C-u 2 \\[gregorio-transpose-region-up] Will transpose the region
+upwards by two steps.
 
 N.B. This function does not check to see if the resulting score
 will be out of range for gregorio. i.e. a tone higher than 'm'."
@@ -211,7 +215,8 @@ will be out of range for gregorio. i.e. a tone higher than 'm'."
   "Transpose region downwards by one diatonic step.
 
 With a numerical prefix argument, transpose by N diatonic steps.
-i.e. C-u 2 \\[gregorio-transpose-region-down] Will transpose the region downwards by two steps.
+i.e. C-u 2 \\[gregorio-transpose-region-down] Will transpose the region
+downwards by two steps.
 
 N.B. This function does not check to see if the resulting score
 will be out of range for gregorio. i.e. a tone lower than 'a'."
@@ -230,6 +235,42 @@ will be out of range for gregorio. i.e. a tone lower than 'a'."
 		    (match-string 1) t)
 		 ")")
 	 t)))))
+
+(defun gregorio-fill-parens (start end note)
+  "Fills empty parentheses with note.
+
+Bound to C-c f by default"
+
+  (interactive "r\nsNote to fill with: ")
+  (save-restriction
+    (narrow-to-region start end)
+    (goto-char 1)
+    (while (search-forward "()" nil t)
+      (replace-match
+       (concat "(" note ")")
+       t))))
+
+(defun gregorio-next-parens (&optional arg)
+  "Move forward to the next punctum group.
+With ARG, do it that many times. Negative arg -N means
+move backward N punctum groups.
+
+forward-sexp (C-M-f) is remaped to this function by default."
+
+  (interactive "p")
+  (or arg (setq arg 1))
+  (goto-char (search-forward "(" nil nil arg)))
+
+(defun gregorio-prev-parens (&optional arg)
+  "Move backward to the previous punctum group.
+With ARG, do it that many times. Negative arg -N means
+move forward N punctum groups.
+
+backward-sexp (C-M-b) is remaped to this function by default."
+
+  (interactive "p")
+  (or arg (setq arg 1))
+  (goto-char (search-backward ")" nil nil arg)))
 
 ;; define the derived mode. Note we use tex-mode as basis.
 
