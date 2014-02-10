@@ -23,9 +23,21 @@
    You can then do C-x C-e at the end of this line, or simply restart
    Emacs. The major mode will activate when you visit an .gabc file.
 ** Using el-get
-   Eventually this major mode will be available through the [[https://github.com/dimitri/el-get][el-get
-   package system]]. This page will be updated when the pull request
-   has been processed.
+   Gregorio-mode is now available in the master branch of the [[https://github.com/dimitri/el-get][el-get
+   package system.]] Simply install el-get using the instructions for
+   the master branch at the above link, and then install the
+   'gregorio-mode' package using this system. You can just type M-x and then
+   #+BEGIN_SRC 
+   el-get-install
+   #+END_SRC
+   Followed by 'gregorio-mode'. Then all should be automatic.
+
+   You can also install the gregorio mode recipe in your own
+   'el-get-user/recipes' folder by copying [[https://raw.github.com/cajetanus/gregorio-mode.el/master/gregorio-mode.rcp][this file]] into
+   #+BEGIN_SRC 
+      ~/.emacs.d/el-get-user/recipes
+   #+END_SRC
+   Note you might have to create this directory if you don't have it yet.
 * Documentation
 ** Local html documentation
    The folder that you obtained via git contains some documentation
