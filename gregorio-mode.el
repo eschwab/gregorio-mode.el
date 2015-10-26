@@ -187,7 +187,7 @@ You can add to the list if necessary with either one of the following options:
   "Regexp for the notes contained within ()'s.")
 
 (defvar gregorio-text-regexp "\\ca\\|æ\\|œ"
-  "Regexp for sepcial text so it can be read easier.")
+  "Regexp for special text so it can be read easier.")
 
 (defvar gregorio-modifiers-regexp "{[^}]+}"
   "Regexp for control characters.")
