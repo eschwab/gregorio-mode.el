@@ -1,14 +1,64 @@
-;; This is a derived-major-mode for editing GABC files.
-;; For information on Gregorio, please see:
-;; http://home.gna.org/gregorio/
+;;; gregorio-mode.el --- Gregorio Mode for .gabc files
+
+;; Copyright (C) 2015 Fr. John Jenkins <jenkins@sspx.ng>
+
+;; Author: Fr. John Jenkins <jenkins@sspx.ng>
+;; Created: 2015-10-25
+;; Version: 1.0
+;; Keywords: gregorio,chant
+;; URL: http://chant.fsspx.pl/gregorio-mode/docs/
+
+;; This file is not (yet) part of GNU Emacs.
+;; However, it is distributed under the same license.
+
+;; GNU Emacs is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 3, or (at your option)
+;; any later version.
+
+;; GNU Emacs is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with GNU Emacs; see the file COPYING.  If not, write to the
+;; Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+;; Boston, MA 02110-1301, USA.
+
+;;; Commentary:
+
+;; This package provides a minor mode for the syntax coloring
+;; of gregorio files as 
+
+;;;###autoload
+(define-derived-mode gregorio-mode tex-mode
+  "gregorio"
+  "Major Mode for editing .gabc files.
+
+This mode executes a hook `gregorio-mode-hook'.
+The customization group is 'gregorio'.
+
+Commands:
+\\{gregorio-mode-keymap}"
+
+  (set (make-local-variable 'font-lock-defaults)
+       '(gregorio-font-lock-keywords))
+  (use-local-map gregorio-mode-keymap)
+  (run-hooks 'gregorio-mode-hook))
+
+;; hooks for opening .gabc files, so this mode loads automatically.
+
+(or (assoc "\\.gabc$" auto-mode-alist)
+    (add-to-list 'auto-mode-alist '("\\.gabc\\'" . gregorio-mode)))
 
 ;; Keyboard bindings. Change them here
 
 (defvar gregorio-mode-keymap
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "C-c C-e") 'gregorio-to-tex)
-    (define-key map (kbd "C-c u") 'gregorio-transpose-region-up)
-    (define-key map (kbd "C-c d") 'gregorio-transpose-region-down)
+    (define-key map (kbd "C-c +") 'gregorio-transpose-region-up)
+    (define-key map (kbd "C-c -") 'gregorio-transpose-region-down)
     (define-key map (kbd "C-M-f") 'gregorio-next-parens)
     (define-key map (kbd "C-M-b") 'gregorio-prev-parens)
     (define-key map (kbd "C-c f") 'gregorio-fill-parens)
@@ -272,28 +322,13 @@ backward-sexp (C-M-b) is remaped to this function by default."
   (or arg (setq arg 1))
   (goto-char (search-backward ")" nil nil arg)))
 
-;; define the derived mode. Note we use tex-mode as basis.
-
-(define-derived-mode gregorio-mode tex-mode
-  "gregorio"
-  "Major Mode for editing .gabc files.
-
-This mode executes a hook `gregorio-mode-hook'.
-The customization group is 'gregorio'.
-
-Commands:
-\\{gregorio-mode-keymap}"
-
-  (set (make-local-variable 'font-lock-defaults)
-       '(gregorio-font-lock-keywords))
-  (use-local-map gregorio-mode-keymap)
-  (run-hooks 'gregorio-mode-hook))
-
-;; hooks for opening .gabc files, so this mode loads automatically.
-
-(or (assoc "\\.gabc$" auto-mode-alist)
-    (add-to-list 'auto-mode-alist '("\\.gabc\\'" . gregorio-mode)))
-
 ;; let's wrap it all up.
 
 (provide 'gregorio-mode)
+
+;; Local Variables:
+;; coding: utf-8
+;; checkdoc-minor-mode: 1
+;; End:
+
+;;; gregorio-mode.el ends here
