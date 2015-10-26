@@ -225,8 +225,7 @@ With a prefix argument, save buffer and execute gregorio on the buffer's file."
 	    (save-buffer)
 	    (shell-command
 	     (concat "gregorio " buffer-file-name) nil "*Gregorio Error*"))
-    (progn
-      (setf new-tex (concat (file-name-base) ".tex"))
+    (let ((new-tex (concat (file-name-base) ".tex")))
       (shell-command-on-region
        (point-min) (point-max)
        "gregorio -sS"
