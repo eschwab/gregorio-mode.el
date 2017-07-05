@@ -46,4 +46,4 @@
    ~/.emacs.d/gregorio-mode.el/docs/
    #+END_SRC
 ** Online html documentation
-   The documentation can also be viewed [[http://chant.fsspx.pl/gregorio-mode/docs/][HERE]] online. 
+   The documentation can also be viewed [[https://jsrjenkins.github.io/gregorio-mode/][HERE]] online. 
