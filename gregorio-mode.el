@@ -6,7 +6,7 @@
 ;; Created: 2015-10-25
 ;; Version: 1.0
 ;; Keywords: gregorio,chant
-;; URL: http://chant.fsspx.pl/gregorio-mode/docs/
+;; URL: https://jsrjenkins.github.io/gregorio-mode/
 
 ;; This file is not (yet) part of GNU Emacs.
 ;; However, it is distributed under the same license.
